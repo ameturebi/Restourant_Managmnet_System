@@ -10,7 +10,7 @@ interface Order {
 }
 
 async function createOrder(order: Order): Promise<Order> {
-    const response = await fetch('http://localhost:3000/orders', {
+    const response = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(order),

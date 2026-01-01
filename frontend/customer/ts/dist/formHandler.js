@@ -34,9 +34,9 @@ var __awaiter =
   };
 function createOrder(order) {
   return __awaiter(this, void 0, void 0, function* () {
-    const response = yield fetch("http://localhost:3000/orders", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const response = yield fetch('/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order),
     });
     if (!response.ok) {
@@ -60,20 +60,33 @@ document.addEventListener("DOMContentLoaded", () => {
       };
       try {
         const response = yield createOrder(order);
-        var modalEl2 = document.getElementById('messageModal');
-        var titleEl2 = document.getElementById('messageModalTitle');
-        var bodyEl2 = document.getElementById('messageModalBody');
-        var okBtn2 = document.getElementById('messageModalOk');
+        var modalEl2 = document.getElementById("messageModal");
+        var titleEl2 = document.getElementById("messageModalTitle");
+        var bodyEl2 = document.getElementById("messageModalBody");
+        var okBtn2 = document.getElementById("messageModalOk");
         if (modalEl2 && window.bootstrap) {
-          titleEl2.textContent = 'Order placed';
-          bodyEl2.textContent = "Order placed successfully. We'll deliver it soon.";
-          var header2 = modalEl2.querySelector('.modal-header');
-          header2.classList.remove('bg-success','bg-danger','bg-warning','bg-info','text-white');
-          header2.classList.add('bg-success','text-white');
+          titleEl2.textContent = "Order placed";
+          bodyEl2.textContent =
+            "Order placed successfully. We'll deliver it soon.";
+          var header2 = modalEl2.querySelector(".modal-header");
+          header2.classList.remove(
+            "bg-success",
+            "bg-danger",
+            "bg-warning",
+            "bg-info",
+            "text-white"
+          );
+          header2.classList.add("bg-success", "text-white");
           var bsModal2 = new window.bootstrap.Modal(modalEl2);
-          okBtn2.onclick = function () { bsModal2.hide(); window.location.href = "index.html"; };
+          okBtn2.onclick = function () {
+            bsModal2.hide();
+            window.location.href = "index.html";
+          };
           bsModal2.show();
-          setTimeout(function () { bsModal2.hide(); window.location.href = "index.html"; }, 2000);
+          setTimeout(function () {
+            bsModal2.hide();
+            window.location.href = "index.html";
+          }, 2000);
         } else {
           alert("Order placed successfully. We'll deliver it soon.");
           setTimeout(function () {
