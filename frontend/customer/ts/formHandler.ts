@@ -57,11 +57,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await createOrder(order);
-            // Show success message and redirect to home
-            alert("Order placed successfully. We'll deliver it soon.");
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 2000);
+            // Show Bootstrap success modal then redirect to home
+            const modalEl = document.getElementById('orderSuccessModal');
+            if (modalEl && (window as any).bootstrap) {
+                const bsModal = new (window as any).bootstrap.Modal(modalEl);
+                bsModal.show();
+                setTimeout(() => {
+                    bsModal.hide();
+                    window.location.href = 'index.html';
+                }, 2000);
+            } else {
+                // Fallback
+                alert("Order placed successfully. We'll deliver it soon.");
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            }
         } catch (error) {
             console.error('Error:', error);
             alert('Order failed.');
