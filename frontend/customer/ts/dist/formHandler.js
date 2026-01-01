@@ -34,9 +34,9 @@ var __awaiter =
   };
 function createOrder(order) {
   return __awaiter(this, void 0, void 0, function* () {
-    const response = yield fetch('/api/orders', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = yield fetch("/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(order),
     });
     if (!response.ok) {
