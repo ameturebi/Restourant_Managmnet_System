@@ -35,7 +35,21 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         try {
             const response = yield createOrder(order);
-            alert('Order successful!');
+            var modalEl = document.getElementById('orderSuccessModal');
+            if (modalEl && window.bootstrap) {
+                var bsModal = new window.bootstrap.Modal(modalEl);
+                bsModal.show();
+                setTimeout(function () {
+                    bsModal.hide();
+                    window.location.href = "index.html";
+                }, 2000);
+            }
+            else {
+                alert("Order placed successfully. We'll deliver it soon.");
+                setTimeout(function () {
+                    window.location.href = "index.html";
+                }, 2000);
+            }
         }
         catch (error) {
             console.error('Error:', error);
