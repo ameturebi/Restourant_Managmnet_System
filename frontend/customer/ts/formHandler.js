@@ -47,6 +47,33 @@ function createOrder(order) {
 }
 document.addEventListener("DOMContentLoaded", () => {
   const bookingForm = document.getElementById("bookingForm");
+
+  // showMessage helper
+  function showMessage(type, title, message, autoClose, autoCloseMs, onClose) {
+    var modalEl = document.getElementById('messageModal');
+    var titleEl = document.getElementById('messageModalTitle');
+    var bodyEl = document.getElementById('messageModalBody');
+    var okBtn = document.getElementById('messageModalOk');
+    if (modalEl && window.bootstrap) {
+      titleEl.textContent = title;
+      bodyEl.textContent = message;
+      var header = modalEl.querySelector('.modal-header');
+      header.classList.remove('bg-success','bg-danger','bg-warning','bg-info','text-white');
+      if (type === 'success') header.classList.add('bg-success','text-white');
+      if (type === 'error') header.classList.add('bg-danger','text-white');
+      if (type === 'warning') header.classList.add('bg-warning');
+      if (type === 'info') header.classList.add('bg-info');
+      var bsModal = new window.bootstrap.Modal(modalEl);
+      okBtn.onclick = function () { bsModal.hide(); if (onClose) onClose(); };
+      bsModal.show();
+      if (autoClose) {
+        setTimeout(function () { bsModal.hide(); if (onClose) onClose(); }, autoCloseMs || 2000);
+      }
+    } else {
+      alert(message);
+      if (onClose) onClose();
+    }
+  }
   bookingForm.addEventListener("submit", (event) =>
     __awaiter(void 0, void 0, void 0, function* () {
       event.preventDefault();
@@ -56,11 +83,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const address = formData.get("address") || "";
       if (deliveryOption === "delivery") {
         if (!address.trim()) {
-          alert("Please enter an address for delivery.");
+          showMessage('warning','Missing info','Please enter an address for delivery.');
           return;
         }
         if (!phone.trim()) {
-          alert("Please enter a phone number for delivery.");
+          showMessage('warning','Missing info','Please enter a phone number for delivery.');
           return;
         }
       }
@@ -76,23 +103,10 @@ document.addEventListener("DOMContentLoaded", () => {
       };
       try {
         const response = yield createOrder(order);
-        var modalEl = document.getElementById("orderSuccessModal");
-        if (modalEl && window.bootstrap) {
-          var bsModal = new window.bootstrap.Modal(modalEl);
-          bsModal.show();
-          setTimeout(function () {
-            bsModal.hide();
-            window.location.href = "index.html";
-          }, 2000);
-        } else {
-          alert("Order placed successfully. We'll deliver it soon.");
-          setTimeout(function () {
-            window.location.href = "index.html";
-          }, 2000);
-        }
+        showMessage('success','Order placed',"Order placed successfully. We'll deliver it soon.", true, 2000, function() { window.location.href = 'index.html'; });
       } catch (error) {
         console.error("Error:", error);
-        alert("Order failed!");
+        showMessage('error','Error','Order failed!');
       }
     })
   );

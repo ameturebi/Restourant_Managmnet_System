@@ -24,6 +24,42 @@ async function createOrder(order: Order): Promise<Order> {
 document.addEventListener('DOMContentLoaded', () => {
     const bookingForm = document.getElementById('bookingForm') as HTMLFormElement;
 
+    // showMessage helper
+    function showMessage(type: 'success' | 'error' | 'warning' | 'info', title: string, message: string, autoClose = false, autoCloseMs = 2000, onClose?: () => void) {
+        const modalEl = document.getElementById('messageModal') as HTMLElement;
+        const titleEl = document.getElementById('messageModalTitle') as HTMLElement;
+        const bodyEl = document.getElementById('messageModalBody') as HTMLElement;
+        const okBtn = document.getElementById('messageModalOk') as HTMLButtonElement;
+        if (modalEl && (window as any).bootstrap) {
+            titleEl.textContent = title;
+            bodyEl.textContent = message;
+            // style modal header based on type
+            const header = modalEl.querySelector('.modal-header') as HTMLElement;
+            header.classList.remove('bg-success','bg-danger','bg-warning','bg-info','text-white');
+            if (type === 'success') header.classList.add('bg-success','text-white');
+            if (type === 'error') header.classList.add('bg-danger','text-white');
+            if (type === 'warning') header.classList.add('bg-warning');
+            if (type === 'info') header.classList.add('bg-info');
+
+            const bsModal = new (window as any).bootstrap.Modal(modalEl);
+            okBtn.onclick = () => {
+                bsModal.hide();
+                if (onClose) onClose();
+            };
+            bsModal.show();
+            if (autoClose) {
+                setTimeout(() => {
+                    bsModal.hide();
+                    if (onClose) onClose();
+                }, autoCloseMs);
+            }
+        } else {
+            // fallback to alert
+            alert(message);
+            if (onClose) onClose();
+        }
+    }
+
     bookingForm.addEventListener('submit', async (event) => {
         event.preventDefault();
 
@@ -35,11 +71,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // If user chose delivery, require address and phone
         if (deliveryOption === 'delivery') {
             if (!address.trim()) {
-                alert('Please enter an address for delivery.');
+                showMessage('warning', 'Missing info', 'Please enter an address for delivery.');
                 return;
             }
             if (!phone.trim()) {
-                alert('Please enter a phone number for delivery.');
+                showMessage('warning', 'Missing info', 'Please enter a phone number for delivery.');
                 return;
             }
         }
@@ -57,25 +93,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await createOrder(order);
-            // Show Bootstrap success modal then redirect to home
-            const modalEl = document.getElementById('orderSuccessModal');
-            if (modalEl && (window as any).bootstrap) {
-                const bsModal = new (window as any).bootstrap.Modal(modalEl);
-                bsModal.show();
-                setTimeout(() => {
-                    bsModal.hide();
-                    window.location.href = 'index.html';
-                }, 2000);
-            } else {
-                // Fallback
-                alert("Order placed successfully. We'll deliver it soon.");
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 2000);
-            }
+            // Show success message and redirect to home
+            showMessage('success', 'Order placed', "Order placed successfully. We'll deliver it soon.", true, 2000, () => {
+                window.location.href = 'index.html';
+            });
         } catch (error) {
             console.error('Error:', error);
-            alert('Order failed.');
+            showMessage('error', 'Error', 'Order failed. Please try again.');
         }
     });
 });
