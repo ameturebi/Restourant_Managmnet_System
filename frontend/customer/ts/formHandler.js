@@ -76,16 +76,15 @@ document.addEventListener("DOMContentLoaded", () => {
       };
       try {
         const response = yield createOrder(order);
-        var modalEl = document.getElementById('orderSuccessModal');
+        var modalEl = document.getElementById("orderSuccessModal");
         if (modalEl && window.bootstrap) {
           var bsModal = new window.bootstrap.Modal(modalEl);
           bsModal.show();
-          setTimeout(function() {
+          setTimeout(function () {
             bsModal.hide();
             window.location.href = "index.html";
           }, 2000);
-        }
-        else {
+        } else {
           alert("Order placed successfully. We'll deliver it soon.");
           setTimeout(function () {
             window.location.href = "index.html";
